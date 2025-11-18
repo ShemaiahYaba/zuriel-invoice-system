@@ -1,0 +1,25 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# Set base directory
+RewriteBase /zuriel-invoice-system/
+
+# Redirect all requests to public folder
+RewriteCond %{REQUEST_URI} !^/zuriel-invoice-system/public/
+RewriteRule ^(.*)$ public/$1 [L]
+
+# Security: Prevent directory listing
+Options -Indexes
+
+# Security: Block access to sensitive files (Apache 2.4 syntax)
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Block access to config files
+<FilesMatch "\.(env|ini|log|conf)$">
+    Require all denied
+</FilesMatch>
+
+# Block access to app and config folders
+RedirectMatch 403 ^/zuriel-invoice-system/(app|config|database)/.*$
