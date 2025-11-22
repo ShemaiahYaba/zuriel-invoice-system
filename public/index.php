@@ -94,6 +94,20 @@ $routes = [
     // Configuration
     'GET /settings' => ['controller' => 'ConfigController', 'action' => 'index'],
     'POST /settings/update' => ['controller' => 'ConfigController', 'action' => 'update'],
+
+    // Authentication Routes
+'GET /login' => ['controller' => 'AuthController', 'action' => 'login'],
+'POST /authenticate' => ['controller' => 'AuthController', 'action' => 'authenticate'],
+'GET /logout' => ['controller' => 'AuthController', 'action' => 'logout'],
+'GET /register' => ['controller' => 'AuthController', 'action' => 'register'],
+'POST /register/store' => ['controller' => 'AuthController', 'action' => 'store'],
+'GET /forgot-password' => ['controller' => 'AuthController', 'action' => 'forgotPassword'],
+'POST /reset-password' => ['controller' => 'AuthController', 'action' => 'resetPassword'],
+'GET /change-password' => ['controller' => 'AuthController', 'action' => 'changePassword'],
+'POST /update-password' => ['controller' => 'AuthController', 'action' => 'updatePassword'],
+
+// Dashboard
+'GET /dashboard' => ['controller' => 'DashboardController', 'action' => 'index'],
 ];
 
 // Match route

@@ -75,6 +75,23 @@
                             <i class="bi bi-gear"></i> Settings
                         </a>
                     </li>
+                    <?php if (isset($_SESSION['logged_in']) && $_SESSION['logged_in']): ?>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+           data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle"></i> <?php echo htmlspecialchars($_SESSION['full_name']); ?>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+            <li><a class="dropdown-item" href="<?php echo Config::url('change-password'); ?>">
+                <i class="bi bi-key"></i> Change Password
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="<?php echo Config::url('logout'); ?>">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a></li>
+        </ul>
+    </li>
+<?php endif; ?>
                 </ul>
             </div>
         </div>
