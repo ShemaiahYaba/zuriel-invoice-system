@@ -92,8 +92,8 @@ $routes = [
     'GET /products/search' => ['controller' => 'ProductController', 'action' => 'search'],
     
     // Configuration
-    'GET /config' => ['controller' => 'ConfigController', 'action' => 'index'],
-    'POST /config/update' => ['controller' => 'ConfigController', 'action' => 'update'],
+    'GET /settings' => ['controller' => 'ConfigController', 'action' => 'index'],
+    'POST /settings/update' => ['controller' => 'ConfigController', 'action' => 'update'],
 ];
 
 // Match route

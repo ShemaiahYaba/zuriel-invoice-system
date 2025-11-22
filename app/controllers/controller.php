@@ -29,8 +29,12 @@ class Controller {
      * Redirect to a URL
      */
     protected function redirect($url) {
-        header("Location: {$url}");
-        exit;
+        // If URL doesn't start with http, use Config::url()
+    if (strpos($url, 'http') !== 0) {
+        $url = Config::url($url);
+    }
+    header("Location: {$url}");
+    exit;
     }
     
     /**

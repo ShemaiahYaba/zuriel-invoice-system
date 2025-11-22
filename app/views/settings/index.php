@@ -5,7 +5,7 @@
         <h2><i class="bi bi-gear"></i> System Configuration</h2>
         <p class="text-muted">Configure company information and system settings</p>
         
-        <form method="POST" action="/config/update" enctype="multipart/form-data">
+        <form method="POST" action="<?php echo Config::url('settings/update'); ?>" enctype="multipart/form-data"></form>
             <input type="hidden" name="csrf_token" value="<?php echo $csrf_token; ?>">
             
             <!-- Company Information -->

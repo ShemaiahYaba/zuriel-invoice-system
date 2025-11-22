@@ -69,7 +69,7 @@ class ReceiptController extends Controller {
         $errors = $this->receiptModel->validate($data);
         if (!empty($errors)) {
             $this->setFlash('danger', implode('<br>', $errors));
-            $this->redirect(Config::url('receipts/create'));
+            $this->redirect('receipts/create');
             return;
         }
         
@@ -77,10 +77,10 @@ class ReceiptController extends Controller {
         try {
             $receiptId = $this->receiptModel->create($data);
             $this->setFlash('success', 'Receipt created successfully');
-            $this->redirect(Config::url('receipts/view/' . $receiptId));
+            $this->redirect('receipts/view/' . $receiptId);
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error creating receipt: ' . $e->getMessage());
-            $this->redirect(Config::url('receipts/create'));
+            $this->redirect('receipts/create');
         }
     }
     
@@ -92,7 +92,7 @@ class ReceiptController extends Controller {
         
         if (!$receipt) {
             $this->setFlash('danger', 'Receipt not found');
-            $this->redirect(Config::url('receipts'));
+            $this->redirect('receipts');
             return;
         }
         
@@ -109,7 +109,7 @@ class ReceiptController extends Controller {
         
         if (!$receipt) {
             $this->setFlash('danger', 'Receipt not found');
-            $this->redirect(Config::url('receipts'));
+            $this->redirect('receipts');
             return;
         }
         
@@ -143,7 +143,7 @@ class ReceiptController extends Controller {
         $errors = $this->receiptModel->validate($data);
         if (!empty($errors)) {
             $this->setFlash('danger', implode('<br>', $errors));
-            $this->redirect(Config::url('receipts/edit/' . $id));
+            $this->redirect('receipts/edit/' . $id);
             return;
         }
         
@@ -151,10 +151,10 @@ class ReceiptController extends Controller {
         try {
             $this->receiptModel->update($id, $data);
             $this->setFlash('success', 'Receipt updated successfully');
-            $this->redirect(Config::url('receipts/view/' . $id));
+            $this->redirect('receipts/view/' . $id);
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error updating receipt: ' . $e->getMessage());
-            $this->redirect(Config::url('receipts/edit/' . $id));
+            $this->redirect('receipts/edit/' . $id);
         }
     }
     
@@ -170,7 +170,7 @@ class ReceiptController extends Controller {
             $this->setFlash('danger', 'Error archiving receipt: ' . $e->getMessage());
         }
         
-        $this->redirect(Config::url('receipts'));
+        $this->redirect('receipts');
     }
     
     /**
@@ -183,7 +183,7 @@ class ReceiptController extends Controller {
         
         if (!$receipt) {
             $this->setFlash('danger', 'Receipt not found');
-            $this->redirect(Config::url('receipts'));
+            $this->redirect('receipts');
             return;
         }
         

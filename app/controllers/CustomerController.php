@@ -51,7 +51,7 @@ class CustomerController extends Controller {
         $errors = $this->customerModel->validate($data);
         if (!empty($errors)) {
             $this->setFlash('danger', implode('<br>', $errors));
-            $this->redirect('/customers/create');
+            $this->redirect('customers/create');
             return;
         }
         
@@ -59,10 +59,10 @@ class CustomerController extends Controller {
         try {
             $this->customerModel->create($data);
             $this->setFlash('success', 'Customer created successfully');
-            $this->redirect('/customers');
+            $this->redirect('customers');
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error creating customer: ' . $e->getMessage());
-            $this->redirect('/customers/create');
+            $this->redirect('customers/create');
         }
     }
     
@@ -74,7 +74,7 @@ class CustomerController extends Controller {
         
         if (!$customer) {
             $this->setFlash('danger', 'Customer not found');
-            $this->redirect('/customers');
+            $this->redirect('customers');
             return;
         }
         
@@ -94,7 +94,7 @@ class CustomerController extends Controller {
         
         if (!$customer) {
             $this->setFlash('danger', 'Customer not found');
-            $this->redirect('/customers');
+            $this->redirect('customers');
             return;
         }
         
@@ -121,7 +121,7 @@ class CustomerController extends Controller {
         $errors = $this->customerModel->validate($data);
         if (!empty($errors)) {
             $this->setFlash('danger', implode('<br>', $errors));
-            $this->redirect("/customers/edit/{$id}");
+            $this->redirect("customers/edit/{$id}");
             return;
         }
         
@@ -129,10 +129,10 @@ class CustomerController extends Controller {
         try {
             $this->customerModel->update($id, $data);
             $this->setFlash('success', 'Customer updated successfully');
-            $this->redirect('/customers');
+            $this->redirect('customers');
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error updating customer: ' . $e->getMessage());
-            $this->redirect("/customers/edit/{$id}");
+            $this->redirect("customers/edit/{$id}");
         }
     }
     
@@ -147,7 +147,7 @@ class CustomerController extends Controller {
             $this->setFlash('danger', 'Error deleting customer: ' . $e->getMessage());
         }
         
-        $this->redirect('/customers');
+        $this->redirect('customers');
     }
     
     /**

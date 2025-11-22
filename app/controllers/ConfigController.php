@@ -13,7 +13,7 @@ class ConfigController extends Controller {
     public function index() {
         $config = Config::all();
         
-        $this->view('config/index', [
+        $this->view('settings/index', [
             'config' => $config,
             'flash' => $this->getFlash(),
             'csrf_token' => $this->generateCsrfToken()
@@ -75,7 +75,7 @@ class ConfigController extends Controller {
             $this->setFlash('danger', 'Error updating configuration: ' . $e->getMessage());
         }
         
-        $this->redirect('/config');
+        $this->redirect('settings');
     }
 }
 ?>

@@ -104,10 +104,10 @@ class InvoiceController extends Controller {
         try {
             $invoiceId = $this->invoiceModel->createWithItems($invoiceData, $items);
             $this->setFlash('success', 'Invoice created successfully');
-            $this->redirect("/invoices/view/{$invoiceId}");
+            $this->redirect("invoices/view/{$invoiceId}");
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error creating invoice: ' . $e->getMessage());
-            $this->redirect('/invoices/create');
+            $this->redirect('invoices/create');
         }
     }
     
@@ -119,7 +119,7 @@ class InvoiceController extends Controller {
         
         if (!$invoice) {
             $this->setFlash('danger', 'Invoice not found');
-            $this->redirect('/invoices');
+            $this->redirect('invoices');
             return;
         }
         
@@ -136,7 +136,7 @@ class InvoiceController extends Controller {
         
         if (!$invoice) {
             $this->setFlash('danger', 'Invoice not found');
-            $this->redirect('/invoices');
+            $this->redirect('invoices');
             return;
         }
         
@@ -200,10 +200,10 @@ class InvoiceController extends Controller {
         try {
             $this->invoiceModel->updateWithItems($id, $invoiceData, $items);
             $this->setFlash('success', 'Invoice updated successfully');
-            $this->redirect("/invoices/view/{$id}");
+            $this->redirect("invoices/view/{$id}");
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error updating invoice: ' . $e->getMessage());
-            $this->redirect("/invoices/edit/{$id}");
+            $this->redirect("invoices/edit/{$id}");
         }
     }
     
@@ -219,7 +219,7 @@ class InvoiceController extends Controller {
             $this->setFlash('danger', 'Error archiving invoice: ' . $e->getMessage());
         }
         
-        $this->redirect('/invoices');
+        $this->redirect('invoices');
     }
     
     /**
@@ -230,7 +230,7 @@ class InvoiceController extends Controller {
         
         if (!$invoice) {
             $this->setFlash('danger', 'Invoice not found');
-            $this->redirect('/invoices');
+            $this->redirect('invoices');
             return;
         }
         
