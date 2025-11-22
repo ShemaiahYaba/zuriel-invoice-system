@@ -1,12 +1,11 @@
 <?php
-require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/ProtectedController.php';
 require_once __DIR__ . '/../middleware/AuthMiddleware.php';
 
-class DashboardController extends Controller {
+class DashboardController extends ProtectedController {
     
     public function index() {
         // Require login
-        AuthMiddleware::requireLogin();
         
         // Get statistics
         $stats = [

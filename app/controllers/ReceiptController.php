@@ -1,12 +1,12 @@
 <?php
-require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/ProtectedController.php';
 require_once __DIR__ . '/../models/Receipt.php';
 
 /**
  * Receipt Controller
  * Handles all receipt CRUD operations
  */
-class ReceiptController extends Controller {
+class ReceiptController extends ProtectedController {
     private $receiptModel;
     
     public function __construct($db) {

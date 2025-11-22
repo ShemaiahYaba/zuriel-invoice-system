@@ -1,12 +1,12 @@
 <?php
-require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/ProtectedController.php';
 require_once __DIR__ . '/../models/Product.php';
 
 /**
  * Product Controller
  * Handles all product CRUD operations
  */
-class ProductController extends Controller {
+class ProductController extends ProtectedController {
     private $productModel;
     
     public function __construct($db) {

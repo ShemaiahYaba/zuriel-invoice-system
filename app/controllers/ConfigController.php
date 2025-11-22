@@ -1,11 +1,11 @@
 <?php
-require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/ProtectedController.php';
 
 /**
  * Config Controller
  * Handles system configuration
  */
-class ConfigController extends Controller {
+class ConfigController extends ProtectedController {
     
     /**
      * Show configuration page

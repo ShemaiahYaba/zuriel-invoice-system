@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/ProtectedController.php';
 require_once __DIR__ . '/../models/Invoice.php';
 require_once __DIR__ . '/../models/Customer.php';
 require_once __DIR__ . '/../models/Product.php';
@@ -8,7 +8,7 @@ require_once __DIR__ . '/../models/Product.php';
  * Invoice Controller
  * Handles all invoice CRUD operations
  */
-class InvoiceController extends Controller {
+class InvoiceController extends ProtectedController {
     private $invoiceModel;
     private $customerModel;
     private $productModel;

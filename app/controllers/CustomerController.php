@@ -1,12 +1,12 @@
 <?php
-require_once __DIR__ . '/Controller.php';
+require_once __DIR__ . '/ProtectedController.php';
 require_once __DIR__ . '/../models/Customer.php';
 
 /**
  * Customer Controller
  * Handles all customer CRUD operations
  */
-class CustomerController extends Controller {
+class CustomerController extends ProtectedController {
     private $customerModel;
     
     public function __construct($db) {
