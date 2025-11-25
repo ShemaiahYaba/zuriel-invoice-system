@@ -256,26 +256,40 @@ require_once __DIR__ . '/../../models/Invoice.php';
             }
         }
         
-        .print-button {
+        .print-button, .back-button {
             position: fixed;
             top: 20px;
-            right: 20px;
-            background: <?php echo Config::get('PRIMARY_COLOR', '#0066CC'); ?>;
+            padding: 10px 20px;
             color: white;
             border: none;
-            padding: 12px 30px;
-            border-radius: 5px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000;
+            text-decoration: none;
+        }
+        
+        .print-button {
+            right: 20px;
+            background-color: #4CAF50;
+        }
+        
+        .back-button {
+            left: 20px;
+            background-color: #0066CC;
         }
         
         .print-button:hover {
-            background: #0052A3;
+            background-color: #45a049;
+        }
+        
+        .back-button:hover {
+            background-color: #0055aa;
         }
     </style>
 </head>
 <body>
+    <a href="<?php echo Config::url('receipts/view/' . $receipt['id']); ?>" class="back-button no-print">← Back to Receipt</a>
     <button class="print-button no-print" onclick="window.print()">🖨️ Print Receipt</button>
     
     <div class="receipt-container">
