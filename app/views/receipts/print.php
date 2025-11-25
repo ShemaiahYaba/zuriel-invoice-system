@@ -298,10 +298,10 @@ require_once __DIR__ . '/../../models/Invoice.php';
         <div class="receipt-header">
             <div class="date-row">
                 <span class="date-label">Date:</span>
-                <span class="date-value"><?php echo date('d/m/Y'); ?></span>
+                <span class="date-value"><?php echo date('d/m/Y', strtotime($receipt['receipt_date'])); ?></span>
                 <div style="margin-left: 30px; display: flex; align-items: center;">
                     <span class="receipt-badge">Payment Receipt</span>
-                    <span class="receipt-number">No: RCPT-<?php echo date('Ymd-His'); ?></span>
+                    <span class="receipt-number">No: <?php echo htmlspecialchars($receipt['receipt_number']); ?></span>
                 </div>
             </div>
         </div>
@@ -310,7 +310,7 @@ require_once __DIR__ . '/../../models/Invoice.php';
         <div class="form-section">
             <div class="form-row">
                 <span class="form-label">Received from:</span>
-                <span class="form-value"><?php echo !empty($receipts) ? htmlspecialchars($receipts[0]['customer_name'] ?? 'Customer') : 'Customer Name'; ?></span>
+                <span class="form-value"><?php echo htmlspecialchars($receipt['received_from']); ?></span>
             </div>
             
             <div class="form-row">
@@ -318,7 +318,7 @@ require_once __DIR__ . '/../../models/Invoice.php';
                 <span class="form-value">
                     <?php 
                     if (class_exists('Invoice')) {
-                        $amount = $receipts[0]['amount'] ?? 0;
+                        $amount = $receipt['total_amount'];
                         $amount_naira = floor($amount);
                         $amount_kobo = round(($amount - $amount_naira) * 100);
                         echo Invoice::numberToWords($amount_naira) . ' ' . Config::get('CURRENCY_NAME', 'Naira');
@@ -337,7 +337,7 @@ require_once __DIR__ . '/../../models/Invoice.php';
             
             <div class="form-row">
                 <span class="form-label">Being part/full payment for:</span>
-                <span class="form-value"><?php echo !empty($receipts[0]['description']) ? htmlspecialchars($receipts[0]['description']) : 'Goods/Services'; ?></span>
+                <span class="form-value"><?php echo htmlspecialchars($receipt['payment_for']); ?></span>
             </div>
             
             <div class="spacer-line"></div>
@@ -347,19 +347,19 @@ require_once __DIR__ . '/../../models/Invoice.php';
         <div class="payment-methods">
             <div class="payment-option">
                 Cash
-                <span class="checkbox <?php echo (!empty($receipts[0]['payment_method']) && $receipts[0]['payment_method'] === 'cash') ? 'checked' : ''; ?>"></span>
+                <span class="checkbox <?php echo ($receipt['payment_method'] === 'cash') ? 'checked' : ''; ?>"></span>
             </div>
             <div class="payment-option">
                 Transfer
-                <span class="checkbox <?php echo (!empty($receipts[0]['payment_method']) && $receipts[0]['payment_method'] === 'transfer') ? 'checked' : ''; ?>"></span>
+                <span class="checkbox <?php echo ($receipt['payment_method'] === 'transfer') ? 'checked' : ''; ?>"></span>
             </div>
             <div class="payment-option">
                 POS
-                <span class="checkbox <?php echo (!empty($receipts[0]['payment_method']) && $receipts[0]['payment_method'] === 'pos') ? 'checked' : ''; ?>"></span>
+                <span class="checkbox <?php echo ($receipt['payment_method'] === 'pos') ? 'checked' : ''; ?>"></span>
             </div>
             <div class="payment-option">
                 Other
-                <span class="checkbox <?php echo (!empty($receipts[0]['payment_method']) && $receipts[0]['payment_method'] === 'other') ? 'checked' : ''; ?>"></span>
+                <span class="checkbox <?php echo ($receipt['payment_method'] === 'other') ? 'checked' : ''; ?>"></span>
             </div>
         </div>
         
@@ -367,14 +367,9 @@ require_once __DIR__ . '/../../models/Invoice.php';
         <div class="amount-box">
             <div class="amount-container">
                 <span class="currency-symbol"><?php echo Config::get('CURRENCY_SYMBOL_MAJOR', '₦'); ?></span>
-                <span class="amount-value"><?php echo number_format($receipts[0]['amount'] ?? 0, 0); ?></span>
+                <span class="amount-value"><?php echo number_format($receipt['amount_naira'], 0); ?></span>
                 <span class="currency-symbol">:</span>
-                <span class="amount-value"><?php 
-                    $amount = $receipts[0]['amount'] ?? 0;
-                    $amount_naira = floor($amount);
-                    $amount_kobo = round(($amount - $amount_naira) * 100);
-                    echo str_pad($amount_kobo, 2, '0', STR_PAD_LEFT); 
-                ?></span>
+                <span class="amount-value"><?php echo str_pad($receipt['amount_kobo'], 2, '0', STR_PAD_LEFT); ?></span>
                 <span class="currency-symbol"><?php echo Config::get('CURRENCY_SYMBOL_MINOR', 'K'); ?></span>
             </div>
         </div>

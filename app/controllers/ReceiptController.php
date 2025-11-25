@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/ProtectedController.php';
 require_once __DIR__ . '/../models/Receipt.php';
+require_once __DIR__ . '/../models/Invoice.php';
 
 /**
  * Receipt Controller
@@ -8,10 +9,12 @@ require_once __DIR__ . '/../models/Receipt.php';
  */
 class ReceiptController extends ProtectedController {
     private $receiptModel;
+    private $invoiceModel;
     
     public function __construct($db) {
         parent::__construct($db);
         $this->receiptModel = new Receipt($db);
+        $this->invoiceModel = new Invoice($db);
     }
     
     /**
@@ -37,9 +40,22 @@ class ReceiptController extends ProtectedController {
     public function create() {
         $receiptNumber = $this->receiptModel->generateReceiptNumber();
         
+        // Get invoice_id from query string if present
+        $invoiceId = $this->query('invoice_id');
+        $invoice = null;
+        
+        if ($invoiceId) {
+            $invoice = $this->invoiceModel->getWithItems($invoiceId);
+        }
+        
+        // Get unpaid/partially paid invoices for dropdown
+        $unpaidInvoices = $this->invoiceModel->getFiltered('issued');
+        
         $this->view('receipts/create', [
             'receipt_number' => $receiptNumber,
-            'csrf_token' => $this->generateCsrfToken()
+            'csrf_token' => $this->generateCsrfToken(),
+            'invoice' => $invoice,
+            'unpaid_invoices' => $unpaidInvoices
         ]);
     }
     
@@ -55,6 +71,7 @@ class ReceiptController extends ProtectedController {
         
         $data = [
             'receipt_number' => $this->sanitize($this->input('receipt_number')),
+            'invoice_id' => $this->input('invoice_id') ?: null,
             'receipt_date' => $this->sanitize($this->input('receipt_date')),
             'received_from' => $this->sanitize($this->input('received_from')),
             'amount_naira' => $nairaKobo['naira'],
@@ -73,10 +90,11 @@ class ReceiptController extends ProtectedController {
             return;
         }
         
-        // Create receipt
+        // Create receipt with invoice update
         try {
-            $receiptId = $this->receiptModel->create($data);
-            $this->setFlash('success', 'Receipt created successfully');
+            $receiptId = $this->receiptModel->createWithInvoice($data);
+            $this->setFlash('success', 'Receipt created successfully' . 
+                ($data['invoice_id'] ? ' and invoice updated' : ''));
             $this->redirect('receipts/view/' . $receiptId);
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error creating receipt: ' . $e->getMessage());
@@ -96,8 +114,15 @@ class ReceiptController extends ProtectedController {
             return;
         }
         
+        // Get related invoice if exists
+        $invoice = null;
+        if (!empty($receipt['invoice_id'])) {
+            $invoice = $this->invoiceModel->find($receipt['invoice_id']);
+        }
+        
         $this->view('receipts/show', [
-            'receipt' => $receipt
+            'receipt' => $receipt,
+            'invoice' => $invoice
         ]);
     }
     
@@ -113,8 +138,12 @@ class ReceiptController extends ProtectedController {
             return;
         }
         
+        // Get unpaid/partially paid invoices for dropdown
+        $unpaidInvoices = $this->invoiceModel->getFiltered('issued');
+        
         $this->view('receipts/edit', [
             'receipt' => $receipt,
+            'unpaid_invoices' => $unpaidInvoices,
             'csrf_token' => $this->generateCsrfToken()
         ]);
     }
@@ -130,6 +159,7 @@ class ReceiptController extends ProtectedController {
         $nairaKobo = Receipt::convertToNairaKobo($totalAmount);
         
         $data = [
+            'invoice_id' => $this->input('invoice_id') ?: null,
             'receipt_date' => $this->sanitize($this->input('receipt_date')),
             'received_from' => $this->sanitize($this->input('received_from')),
             'amount_naira' => $nairaKobo['naira'],
@@ -147,9 +177,9 @@ class ReceiptController extends ProtectedController {
             return;
         }
         
-        // Update receipt
+        // Update receipt with invoice update
         try {
-            $this->receiptModel->update($id, $data);
+            $this->receiptModel->updateWithInvoice($id, $data);
             $this->setFlash('success', 'Receipt updated successfully');
             $this->redirect('receipts/view/' . $id);
         } catch (Exception $e) {
@@ -163,8 +193,20 @@ class ReceiptController extends ProtectedController {
      */
     public function delete($id) {
         try {
-            // Archive instead of delete for audit trail
+            // Get receipt before deleting
+            $receipt = $this->receiptModel->find($id);
+            
+            // Archive receipt
             $this->receiptModel->update($id, ['status' => 'archived']);
+            
+            // Recalculate invoice payment if linked
+            if (!empty($receipt['invoice_id'])) {
+                require_once __DIR__ . '/../models/Receipt.php';
+                $receiptModel = new Receipt($this->db);
+                // This will trigger recalculation in the model
+                $receiptModel->updateWithInvoice($id, ['status' => 'archived']);
+            }
+            
             $this->setFlash('success', 'Receipt archived successfully');
         } catch (Exception $e) {
             $this->setFlash('danger', 'Error archiving receipt: ' . $e->getMessage());
