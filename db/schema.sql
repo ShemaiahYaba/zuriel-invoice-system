@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 22, 2025 at 11:22 PM
+-- Generation Time: Nov 25, 2025 at 08:44 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12-
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -38,22 +38,22 @@ CREATE TABLE `config` (
 --
 
 INSERT INTO `config` (`config_key`, `config_value`, `updated_at`) VALUES
-('COMPANY_ADDRESS', 'Shop 1-041, Area 1 Shopping Plaza, Garki Abuja', '2025-11-22 20:59:58'),
-('COMPANY_EMAIL', 'zurieltechventures@gmail.com', '2025-11-22 20:59:58'),
-('COMPANY_LOGO', '/images/logo.png', '2025-11-22 20:59:58'),
-('COMPANY_NAME', 'ZURIEL TECH VENTURES', '2025-11-22 20:59:58'),
-('COMPANY_PHONE_1', '+234 (0) 908 444 4240', '2025-11-22 20:59:58'),
-('COMPANY_PHONE_2', '+234 (0) 908 444 4140', '2025-11-22 20:59:58'),
-('COMPANY_TAGLINE', 'Innovating Tomorrow, Today', '2025-11-22 20:59:58'),
-('CURRENCY_NAME', 'Naira', '2025-11-22 20:59:58'),
-('CURRENCY_SYMBOL_MAJOR', '₦', '2025-11-22 20:59:58'),
-('CURRENCY_SYMBOL_MINOR', 'K', '2025-11-22 20:59:58'),
-('HEADER_BG_COLOR', '#0066CC', '2025-11-22 20:59:58'),
-('INVOICE_PREFIX', 'INV', '2025-11-22 20:59:58'),
-('INVOICE_START_NUMBER', '1', '2025-11-22 20:59:58'),
-('PRIMARY_COLOR', '#0066CC', '2025-11-22 20:59:58'),
-('RECEIPT_PREFIX', 'RCP', '2025-11-22 20:59:58'),
-('RECEIPT_START_NUMBER', '1', '2025-11-22 20:59:58');
+('COMPANY_ADDRESS', 'Shop 1-041, Area 1 Shopping Plaza, Garki Abuja', '2025-11-25 11:51:49'),
+('COMPANY_EMAIL', 'zurieltechventures@gmail.com', '2025-11-25 11:51:49'),
+('COMPANY_LOGO', '/zuriel-invoice-system/public/images/logo.png', '2025-11-25 11:42:40'),
+('COMPANY_NAME', 'ZURIEL TECH VENTURES', '2025-11-25 11:51:49'),
+('COMPANY_PHONE_1', '+234 (0) 908 444 4240', '2025-11-25 11:51:49'),
+('COMPANY_PHONE_2', '+234 (0) 908 444 4140', '2025-11-25 11:51:49'),
+('COMPANY_TAGLINE', 'Innovating Tomorrow, Today', '2025-11-25 11:51:49'),
+('CURRENCY_NAME', 'Naira', '2025-11-25 11:51:49'),
+('CURRENCY_SYMBOL_MAJOR', '₦', '2025-11-25 11:51:49'),
+('CURRENCY_SYMBOL_MINOR', 'K', '2025-11-25 11:51:49'),
+('HEADER_BG_COLOR', '#0066cc', '2025-11-25 11:51:49'),
+('INVOICE_PREFIX', 'INV', '2025-11-25 11:51:49'),
+('INVOICE_START_NUMBER', '1', '2025-11-25 11:51:49'),
+('PRIMARY_COLOR', '#0066cc', '2025-11-25 11:51:49'),
+('RECEIPT_PREFIX', 'RCP', '2025-11-25 11:51:49'),
+('RECEIPT_START_NUMBER', '1', '2025-11-25 11:51:49');
 
 -- --------------------------------------------------------
 
@@ -94,6 +94,7 @@ CREATE TABLE `invoices` (
   `lpo_number` varchar(100) DEFAULT NULL,
   `subtotal` decimal(10,2) NOT NULL DEFAULT 0.00,
   `total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `paid_amount` decimal(10,2) DEFAULT 0.00,
   `amount_in_words` text DEFAULT NULL,
   `invoice_type` enum('cash','credit') DEFAULT 'cash',
   `status` enum('draft','issued','paid','archived') DEFAULT 'issued',
@@ -105,8 +106,9 @@ CREATE TABLE `invoices` (
 -- Dumping data for table `invoices`
 --
 
-INSERT INTO `invoices` (`id`, `invoice_number`, `customer_id`, `customer_name`, `customer_address`, `invoice_date`, `lpo_number`, `subtotal`, `total`, `amount_in_words`, `invoice_type`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'INV-00001', 4, 'SHEMAIAH WAMBEBE YABA-SHIAKA', 'NO. 4C, ZONE D, MILLONAIRE QUATERS, BYAZHIN, KUBWA, ABUJA', '2025-11-22', '12089012', 250000.00, 250000.00, 'Two Hundred Fifty Thousand Naira Only', 'cash', 'issued', '2025-11-22 21:08:24', '2025-11-22 21:13:53');
+INSERT INTO `invoices` (`id`, `invoice_number`, `customer_id`, `customer_name`, `customer_address`, `invoice_date`, `lpo_number`, `subtotal`, `total`, `paid_amount`, `amount_in_words`, `invoice_type`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'INV-00001', 4, 'SHEMAIAH WAMBEBE YABA-SHIAKA', 'NO. 4C, ZONE D, MILLONAIRE QUATERS, BYAZHIN, KUBWA, ABUJA', '2025-11-22', '12089012', 250000.00, 250000.00, 250000.00, 'Two Hundred Fifty Thousand Naira Only', 'cash', 'paid', '2025-11-22 21:08:24', '2025-11-25 19:23:35'),
+(5, 'INV-00002', 4, 'SHEMAIAH WAMBEBE YABA-SHIAKA', 'NO. 4C, ZONE D, MILLONAIRE QUATERS, BYAZHIN, KUBWA, ABUJA', '2025-11-25', '12089012', 250000.00, 250000.00, 0.00, 'Two Hundred Fifty Thousand Naira Only', 'cash', 'issued', '2025-11-25 19:24:26', '2025-11-25 19:24:26');
 
 -- --------------------------------------------------------
 
@@ -128,7 +130,8 @@ CREATE TABLE `invoice_items` (
 --
 
 INSERT INTO `invoice_items` (`id`, `invoice_id`, `qty`, `description`, `rate`, `amount`) VALUES
-(1, 1, 1, 'Mobile App Development', 250000.00, 250000.00);
+(1, 1, 1, 'Mobile App Development', 250000.00, 250000.00),
+(2, 5, 1, 'Mobile App Development', 250000.00, 250000.00);
 
 -- --------------------------------------------------------
 
@@ -153,7 +156,17 @@ INSERT INTO `login_attempts` (`id`, `username`, `ip_address`, `success`, `attemp
 (2, 'shemaiah', '127.0.0.1', 1, '2025-11-22 22:15:06'),
 (3, 'shemaiah', '127.0.0.1', 1, '2025-11-22 22:17:46'),
 (4, 'piano', '127.0.0.1', 1, '2025-11-22 22:19:11'),
-(5, 'shemaiah', '127.0.0.1', 1, '2025-11-22 22:20:24');
+(5, 'shemaiah', '127.0.0.1', 1, '2025-11-22 22:20:24'),
+(6, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:19:09'),
+(7, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:19:17'),
+(8, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:24:05'),
+(9, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:27:05'),
+(10, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:37:36'),
+(11, 'shemaiah', '127.0.0.1', 0, '2025-11-25 11:48:17'),
+(12, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:48:22'),
+(13, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:51:05'),
+(14, 'shemaiah', '127.0.0.1', 1, '2025-11-25 11:51:38'),
+(15, 'shemaiah', '127.0.0.1', 1, '2025-11-25 19:31:45');
 
 -- --------------------------------------------------------
 
@@ -190,6 +203,7 @@ INSERT INTO `products` (`id`, `description`, `rate`, `created_at`, `updated_at`)
 CREATE TABLE `receipts` (
   `id` int(11) NOT NULL,
   `receipt_number` varchar(50) NOT NULL,
+  `invoice_id` int(11) DEFAULT NULL,
   `receipt_date` date NOT NULL,
   `received_from` varchar(255) NOT NULL,
   `amount_naira` int(11) NOT NULL,
@@ -201,6 +215,13 @@ CREATE TABLE `receipts` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `receipts`
+--
+
+INSERT INTO `receipts` (`id`, `receipt_number`, `invoice_id`, `receipt_date`, `received_from`, `amount_naira`, `amount_kobo`, `total_amount`, `payment_for`, `payment_method`, `status`, `created_at`, `updated_at`) VALUES
+(2, 'RCP-00001', 1, '2025-11-25', 'SHEMAIAH WAMBEBE YABA-SHIAKA', 250000, 0, 250000.00, 'Payment for Invoice INV-00001', 'transfer', 'issued', '2025-11-25 19:23:35', '2025-11-25 19:23:35');
 
 -- --------------------------------------------------------
 
@@ -227,7 +248,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `full_name`, `role`, `status`, `last_login`, `created_at`, `updated_at`) VALUES
 (1, 'admin', 'admin@zurieltech.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'System Administrator', 'admin', 'active', NULL, '2025-11-22 22:04:12', '2025-11-22 22:04:12'),
-(2, 'shemaiah', 'admin@example.com', '$2y$10$f6XNb2W7kgL84NaZIWg84eu6XQkJ4834AX9c2PA9zi6j33vF7/EvC', 'SHEMAIAH', 'admin', 'active', '2025-11-22 22:20:24', '2025-11-22 22:14:52', '2025-11-22 22:20:24'),
+(2, 'shemaiah', 'admin@example.com', '$2y$10$Qd0l7xInPE9GI8X/mnHA6.FK0Zb0p747EFz51Xrd5NDOJg7S7GCTW', 'SHEMAIAH', 'admin', 'active', '2025-11-25 19:31:45', '2025-11-22 22:14:52', '2025-11-25 19:31:45'),
 (3, 'piano', 'piano@admin.com', '$2y$10$L.Q7wHIHsO/JJPyhAxkPjemcK9jmud10u9LKfTbluy54LRTfkVFE6', 'piano', 'staff', 'active', '2025-11-22 22:19:11', '2025-11-22 22:19:03', '2025-11-22 22:19:11');
 
 -- --------------------------------------------------------
@@ -296,7 +317,8 @@ ALTER TABLE `products`
 --
 ALTER TABLE `receipts`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `receipt_number` (`receipt_number`);
+  ADD UNIQUE KEY `receipt_number` (`receipt_number`),
+  ADD KEY `idx_invoice_id` (`invoice_id`);
 
 --
 -- Indexes for table `users`
@@ -334,19 +356,19 @@ ALTER TABLE `customers`
 -- AUTO_INCREMENT for table `invoices`
 --
 ALTER TABLE `invoices`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `invoice_items`
 --
 ALTER TABLE `invoice_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `login_attempts`
 --
 ALTER TABLE `login_attempts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -358,7 +380,7 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `receipts`
 --
 ALTER TABLE `receipts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -387,6 +409,12 @@ ALTER TABLE `invoices`
 --
 ALTER TABLE `invoice_items`
   ADD CONSTRAINT `invoice_items_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `receipts`
+--
+ALTER TABLE `receipts`
+  ADD CONSTRAINT `receipts_ibfk_1` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `user_sessions`
