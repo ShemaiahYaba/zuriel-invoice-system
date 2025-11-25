@@ -80,34 +80,51 @@ class Config {
      */
     public static function update($db, $key, $value) {
         try {
+            // First try to update
             $stmt = $db->prepare("
-                INSERT INTO config (config_key, config_value) 
-                VALUES (:key, :value)
-                ON DUPLICATE KEY UPDATE config_value = :value
+                UPDATE config 
+                SET config_value = :value, updated_at = CURRENT_TIMESTAMP 
+                WHERE config_key = :key
             ");
             $stmt->execute([
                 'key' => $key,
                 'value' => $value
             ]);
+            
+            // If no rows affected, insert
+            if ($stmt->rowCount() === 0) {
+                $stmt = $db->prepare("
+                    INSERT INTO config (config_key, config_value) 
+                    VALUES (:key, :value)
+                ");
+                $stmt->execute([
+                    'key' => $key,
+                    'value' => $value
+                ]);
+            }
+            
+            // Update in-memory config
             self::$config[$key] = $value;
             return true;
         } catch (PDOException $e) {
+            error_log("Config update error: " . $e->getMessage());
             return false;
         }
     }
+    
     /**
- * Generate URL with base path
- */
-public static function url($path = '') {
-    // Get base path from script name
-    $scriptPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-    $basePath = str_replace('/public', '', $scriptPath);
-    
-    // Clean up the path
-    $path = ltrim($path, '/');
-    
-    // Return full URL
-    return $basePath . ($path ? '/' . $path : '');
-}
+     * Generate URL with base path
+     */
+    public static function url($path = '') {
+        // Get base path from script name
+        $scriptPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+        $basePath = str_replace('/public', '', $scriptPath);
+        
+        // Clean up the path
+        $path = ltrim($path, '/');
+        
+        // Return full URL
+        return $basePath . ($path ? '/' . $path : '');
+    }
 }
 ?>

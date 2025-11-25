@@ -188,24 +188,55 @@ class AuthController extends Controller {
     }
     
     /**
-     * Process forgot password
+     * Process password reset
      */
     public function resetPassword() {
         $this->validateCsrfToken();
         
-        $email = $this->sanitize($this->input('email'));
-        $user = $this->userModel->findByEmail($email);
+        $usernameOrEmail = $this->sanitize($this->input('username'));
+        $newPassword = $this->input('new_password');
+        $confirmPassword = $this->input('confirm_password');
         
-        if ($user) {
-            // Generate reset token and send email
-            // For now, just show success message
-            $this->setFlash('success', 'If an account exists with that email, a password reset link has been sent.');
-        } else {
-            // Still show success to prevent email enumeration
-            $this->setFlash('success', 'If an account exists with that email, a password reset link has been sent.');
+        // Basic validation
+        if (empty($usernameOrEmail) || empty($newPassword) || empty($confirmPassword)) {
+            $this->setFlash('error', 'All fields are required.');
+            $this->redirect('forgot-password');
+            return;
         }
         
-        $this->redirect('login');
+        // Check if passwords match
+        if ($newPassword !== $confirmPassword) {
+            $this->setFlash('error', 'Passwords do not match.');
+            $this->redirect('forgot-password');
+            return;
+        }
+        
+        // Check password length
+        if (strlen($newPassword) < 6) {
+            $this->setFlash('error', 'Password must be at least 6 characters long.');
+            $this->redirect('forgot-password');
+            return;
+        }
+        
+        // Try to find user by email or username
+        $user = $this->userModel->findByEmail($usernameOrEmail);
+        if (!$user) {
+            // If not found by email, try by username
+            $user = $this->userModel->findByUsername($usernameOrEmail);
+        }
+        
+        if ($user) {
+            // Update the user's password
+            $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+            $this->userModel->update($user['id'], ['password' => $hashedPassword]);
+            
+            $this->setFlash('success', 'Your password has been updated successfully. You can now login with your new password.');
+            $this->redirect('login');
+        } else {
+            // For security, don't reveal if the user exists or not
+            $this->setFlash('success', 'If an account exists with that username/email, the password has been updated.');
+            $this->redirect('login');
+        }
     }
     
     /**
