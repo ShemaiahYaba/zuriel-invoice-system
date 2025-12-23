@@ -116,15 +116,14 @@ class Config {
      * Generate URL with base path
      */
     public static function url($path = '') {
-        // Get base path from script name
-        $scriptPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-        $basePath = str_replace('/public', '', $scriptPath);
+        // Get base URL from config or use default
+        $baseUrl = rtrim(self::get('BASE_URL', 'http://' . $_SERVER['HTTP_HOST'] . '/zuriel-invoice-system'), '/');
         
         // Clean up the path
         $path = ltrim($path, '/');
         
         // Return full URL
-        return $basePath . ($path ? '/' . $path : '');
+        return $baseUrl . ($path ? '/' . $path : '');
     }
 }
 ?>
